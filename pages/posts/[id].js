@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import dados from '../../dados.json';
 
 export async function getStaticPaths(){
-
     const paths = dados.posts.map((postAtual)=>{
         return { params: { id: `${postAtual.id}` } };
     });
@@ -97,9 +96,9 @@ export default function PostByIdScreen(props){
                     cursor: 'pointer',
                 }}
             >
-                <Link href="/" passHref>
+                <Link href="/posts" passHref>
                     <Text styleSheet={{ hover: { textDecoration: 'underline' }, fontFamily: 'sans-serif' }}>
-                        Voltar para home
+                        Listar meus posts
                     </Text>
                 </Link>
             </Box>

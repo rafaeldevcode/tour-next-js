@@ -1,92 +1,61 @@
-import Link from "next/link";
-import { Box, Text, Image } from "@skynexui/components";
-import dados from '../dados.json';
+import { Box, Button, TextField } from "@skynexui/components";
+import { useRouter } from "next/router";
+import React from "react";
+import nookies from 'nookies';
 
 export default function HomeScreen(){
-
-    const infos = {
-        nome: 'Rafael Vieira',
-        gitUser: 'rafaeldevcode'
-    }
-    const posts = dados.posts;
+    const [ senha, setSenha ] = React.useState('123456');
+    const router = useRouter();
 
     return (
         <Box
             styleSheet={{
+                border: '1px solid #3396FF',
                 flexDirection: 'column',
-                margin: '32px auto',
-                maxWidth: '800px',
-                paddingHorizontal: '16px',
+                marginTop: '20%',
+                padding: '32px',
+                borderRadius: '4px',
+                boxShadow: '1px 1px 0 5px rgba(51, 150, 255, .2)',
+                maxWidth: { xs: '100%', sm: '400px' },
+                marginHorizontal: { xs: '16px', sm: 'auto' },
             }}
         >
-            <Image 
-            src={`https://github.com/${infos.gitUser}.png`}
-            styleSheet={{
-                width: '150px',
-                height: '150px',
-                borderRadius: '50%',
-                margin: 'auto',
-                border: '2px solid #3396FF'
-            }}
-            />
-
-            <Text
-                variant="heading1"
-                tag="h1"
-                styleSheet={{ 
-                    color:'#3396FF', 
-                    justifyContent: 'center', 
-                    fontFamily: 'sans-serif', 
-                    marginBottom: '32px', 
-                    fontSize: '2.5em' 
-                }}
-            >{infos.nome}</Text>
-
-            <Box 
-                styleSheet={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-                    marginTop: '16px',
-                    gridGap: '16px',
+            <form
+                onSubmit={(event)=>{
+                    event.preventDefault();
+                    if(senha){
+                        nookies.set(null, 'SENHA_SECRETA', senha, {
+                            maxAge: 30 * 24 * 60 * 60,
+                            path: '/'
+                        })
+                        router.push('/posts');
+                    }else{
+                        alert('Informe sua senha!');
+                    }
                 }}
             >
-                {posts.map(({ title, content, id })=>(
-                    <Post key={id} title={title} content={content} id={id} />
-                ))}
-            </Box>
-        </Box>
-    )
-}
+                <Box styleSheet={{ flexDirection: 'column' }}>
+                    <TextField 
+                        label="Qua é a sua senha secreta?"
+                        value={senha}
+                        styleSheet={{ fontFamily: 'sans-serif', focus: { borderColor: '#3396FF' }, hover: { borderColor: '#3396FF' } }}
+                    />
 
-function Post({ title, content, id }){
-    return (
-        <Box
-            styleSheet={{
-                flexDirection: 'column',
-                border: '2px solid #3396FF',
-                borderRadius: '5px',
-                padding: '16px',
-                boxShadow: '1px 1px 5px 0 #3396FF',
-                transition: '.3s',
-                hover: {
-                    boxShadow: '1px 1px 5px 5px #3396FF',
-                }
-            }}
-        >
-            <Link href={`/posts/${id}`} passHref>
-                <Text
-                    tag="a"
-                    variant="heading4"
-                    styleSheet={{ display: 'block', color: '#3396FF', marginBottom: '16px', cursor: 'pointer', fontFamily: 'sans-serif' }}
-                >
-                    {title}
-                </Text>
-            </Link>
-
-            <Text styleSheet={{ fontFamily: 'sans-serif' }}>
-                {content.substring(0, 120)}...
-            </Text>
-
+                    <Button 
+                        type="submit"
+                        label="Acessar"
+                        styleSheet={{
+                            backgroundColor: '#3396FF',
+                            fontFamily: 'sans-serif',
+                            transition: '.4s',
+                            hover: {
+                                backgroundColor: '#3396FF9C'
+                            }
+                        }}
+                        onChange={(event) => setSenha(event.target.value)}
+                    />
+                </Box>
+            </form>
         </Box>
     )
 }
